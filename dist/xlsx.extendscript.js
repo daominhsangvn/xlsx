@@ -161,7 +161,8 @@ var DO_NOT_EXPORT_CODEPAGE = true;
 var XLSX = {};
 function make_xlsx_lib(XLSX){
 XLSX.version = '0.20.0';
-XLSX.style_version = '1.3.0'; /* xlsx-js-style */var current_codepage = 1200, current_ansi = 1252;
+XLSX.style_version = '1.3.0'; /* xlsx-js-style */
+var current_codepage = 1200, current_ansi = 1252;
 /*global cptable:true, window */
 var $cptable;
 
@@ -28169,7 +28170,8 @@ var StyleBuilder = function (options) {
         },
     }.initialize(options || {});
 };
-/* xlsx-js-style ^^^ */if(typeof parse_xlscfb !== "undefined") XLSX.parse_xlscfb = parse_xlscfb;
+/* xlsx-js-style ^^^ */
+if(typeof parse_xlscfb !== "undefined") XLSX.parse_xlscfb = parse_xlscfb;
 XLSX.parse_zip = parse_zip;
 XLSX.read = readSync; //xlsread
 XLSX.readFile = readFileSync; //readFile
