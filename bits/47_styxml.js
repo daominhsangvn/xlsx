@@ -410,7 +410,14 @@ return function parse_sty_xml(data, themes, opts) {
 };
 })();
 
+var style_builder; /* xlsx-js-style */
+
 function write_sty_xml(wb/*:Workbook*/, opts)/*:string*/ {
+	/* xlsx-js-style vvv */
+    if (typeof style_builder != 'undefined' && typeof 'require' != 'undefined') {
+        return style_builder.toXml();
+    }
+    /* xlsx-js-style ^^^ */
 	var o = [XML_HEADER, writextag('styleSheet', null, {
 		'xmlns': XMLNS_main[0],
 		'xmlns:vt': XMLNS.vt
