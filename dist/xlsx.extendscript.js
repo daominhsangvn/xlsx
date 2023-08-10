@@ -15599,27 +15599,38 @@ function default_margins(margins, mode) {
 }
 
 function get_cell_style(styles, cell, opts) {
-	var z = opts.revssf[cell.z != null ? cell.z : "General"];
-	var i = 0x3c, len = styles.length;
-	if(z == null && opts.ssf) {
-		for(; i < 0x188; ++i) if(opts.ssf[i] == null) {
-			SSF__load(cell.z, i);
-			// $FlowIgnore
-			opts.ssf[i] = cell.z;
-			opts.revssf[cell.z] = z = i;
-			break;
-		}
+	/* xlsx-js-style vvv */
+	if (typeof style_builder != 'undefined') {
+		if (/^\d+$/.exec(cell.s)) { return cell.s}  // if its already an integer index, let it be
+        if (cell.s && (cell.s == +cell.s)) { return cell.s}  // if its already an integer index, let it be
+        var s = cell.s || {};
+        if (cell.z) s.numFmt = cell.z;
+        return style_builder.addStyle(s);
 	}
-	for(i = 0; i != len; ++i) if(styles[i].numFmtId === z) return i;
-	styles[len] = {
-		numFmtId:z,
-		fontId:0,
-		fillId:0,
-		borderId:0,
-		xfId:0,
-		applyNumberFormat:1
-	};
-	return len;
+	else {
+		/* xlsx-js-style ^^^ */
+		var z = opts.revssf[cell.z != null ? cell.z : "General"];
+		var i = 0x3c, len = styles.length;
+		if(z == null && opts.ssf) {
+			for(; i < 0x188; ++i) if(opts.ssf[i] == null) {
+				SSF__load(cell.z, i);
+				// $FlowIgnore
+				opts.ssf[i] = cell.z;
+				opts.revssf[cell.z] = z = i;
+				break;
+			}
+		}
+		for(i = 0; i != len; ++i) if(styles[i].numFmtId === z) return i;
+		styles[len] = {
+			numFmtId:z,
+			fontId:0,
+			fillId:0,
+			borderId:0,
+			xfId:0,
+			applyNumberFormat:1
+		};
+		return len;
+	} /* xlsx-js-style ^^^ */
 }
 
 function safe_format(p, fmtid, fillid, opts, themes, styles, date1904) {
@@ -26994,6 +27005,7 @@ function write_zip(wb, opts) {
 
 function write_zip_type(wb, opts) {
 	var o = dup(opts||{});
+	style_builder  = new StyleBuilder(opts); /* xlsx-js-style */
 	var z = write_zip(wb, o);
 	return write_zip_denouement(z, o);
 }
